@@ -104,14 +104,22 @@ require([
              "起点高程: {LBTG}m </br>" +
              "终点高程: {LETG}m</br>" +"管线状态: {PSTATUS}</br>" +
              "所在道路: {PROAD}</br>" +"管线长度: {PLength}m";
-    var factories_description=/*"编&nbsp&nbsp&nbsp&nbsp&nbsp号:{FileNum}</br>"+*/"排水户名:{TextString}</br>"+
-             /*"成立时间:{EstablishT}</br>"+"详细地址:{Address}</br>"+*/
-             /*"法定代表人:{LegalPerso}</br>"+"营业执照注册号:{BusinessNu}</br>"+*/
-             /*"联&nbsp系&nbsp人:{ContactPer}</br>"+"联系电话:{PhoneNum}</br>"+*/
-             /*"排水户业务性质:{BusinessTy}</br>"+*/"排水户性质:{Nature}</br>"+
-             "主要产品或服务:{ProductSer}</br>"+/*"主要原料:{MainMateri}</br>"+*/
-             /*"预处理方式:{Pretreatme}</br>"+*/"排水许可证有效期:{LicenseVal}</br>"+
-            /* "排水许可证编号:{LicenseNum}"+*/"</br><a href='javascript:void(0)' onclick ='editFacInfos()'>详细信息</a>";
+    // var factories_description=/*"编&nbsp&nbsp&nbsp&nbsp&nbsp号:{FileNum}</br>"+*/"排水户名:{TextString}</br>"+
+    //          /*"成立时间:{EstablishT}</br>"+"详细地址:{Address}</br>"+*/
+    //          /*"法定代表人:{LegalPerso}</br>"+"营业执照注册号:{BusinessNu}</br>"+*/
+    //          /*"联&nbsp系&nbsp人:{ContactPer}</br>"+"联系电话:{PhoneNum}</br>"+*/
+    //          /*"排水户业务性质:{BusinessTy}</br>"+*/"排水户性质:{Nature}</br>"+
+    //          "主要产品或服务:{ProductSer}</br>"+/*"主要原料:{MainMateri}</br>"+*/
+    //          /*"预处理方式:{Pretreatme}</br>"+*/"排水许可证有效期:{LicenseVal}</br>"+
+    //         /* "排水许可证编号:{LicenseNum}"+*/"</br><a href='javascript:void(0)' onclick ='editFacInfos()'>详细信息</a>";
+    var factories_description="编&nbsp&nbsp&nbsp&nbsp&nbsp号:{FileNum}</br>"+"排水户名:{TextString}</br>"+
+             "成立时间:{EstablishT}</br>"+"详细地址:{Address}</br>"+
+             "法定代表人:{LegalPerso}</br>"+"营业执照注册号:{BusinessNu}</br>"+
+             "联&nbsp系&nbsp人:{ContactPer}</br>"+"联系电话:{PhoneNum}</br>"+
+             "排水户业务性质:{BusinessTy}</br>"+"排水户性质:{Nature}</br>"+
+             "主要产品或服务:{ProductSer}</br>"+"主要原料:{MainMateri}</br>"+
+             "预处理方式:{Pretreatme}</br>"+"排水许可证有效期:{LicenseVal}</br>"+
+             "排水许可证编号:{LicenseNum}";
     //popup弹窗显示字段
     var line_fieldInfos = [
                     {
@@ -719,6 +727,26 @@ require([
     psOuter_renderer.addValue("WS", new PictureMarkerSymbol("../images/psOuter/wsOuter.png", 10, 10));
     ps_outerLayer.setRenderer(psOuter_renderer);
     map.addLayer(ps_outerLayer);
+    /*start排水口显隐藏等*/
+     on(dom.byId("psOuterBtn"),"click",function(){
+        var color =dom.byId("psOuterBtn").style["background-color"];
+        if(color==downColor){
+          dom.byId("psOuterBtn").style["background-color"]="";
+          //map.getLayer("Factories").setVisibility(false);
+          ps_outerLayer.setVisibility(false);
+        }else{
+          //map.getLayer("Factories").setVisibility(true);
+          ps_outerLayer.setVisibility(true);
+          dom.byId("psOuterBtn").style["background-color"]=downColor;
+          ps_outerLayer.infoTemplate=new PopupTemplate({
+              "title":"排水口信息",
+              "description":points_description,
+              "fieldInfos":points_fieldInfos,
+              "showAttachments":true//由于服务器并没有创建附件所以并不可见
+            });
+        }
+      });
+    /*end排水口显隐藏等*/
     //POI点图层
     /*var addressLyr= new FeatureLayer(ARCGISIP+"/arcgis/rest/services/POI_HZW_cgcs2000/MapServer",{
         id:"mAddress"
@@ -879,28 +907,8 @@ require([
 /**end图层树**/      
 //初始化geometryservice
     esriConfig.defaults.geometryService = new GeometryService(ARCGISIP + "/arcgis/rest/services/Utilities/Geometry/GeometryServer");
-/*start排水口显隐藏等*/
- on(dom.byId("psOuterBtn"),"click",function(){
-    var color =dom.byId("psOuterBtn").style["background-color"];
-    if(color==downColor){
-      dom.byId("psOuterBtn").style["background-color"]="";
-      //map.getLayer("Factories").setVisibility(false);
-      ps_outerLayer.setVisibility(false);
-    }else{
-      //map.getLayer("Factories").setVisibility(true);
-      ps_outerLayer.setVisibility(true);
-      dom.byId("psOuterBtn").style["background-color"]=downColor;
-      ps_outerLayer.infoTemplate=new PopupTemplate({
-          "title":"排水口信息",
-          "description":points_description,
-          "fieldInfos":points_fieldInfos,
-          "showAttachments":true
-        });
-    }
-  });
-/*end排水口显隐藏等*/
 /**start排水户面图层显隐藏/查看属性信息(popup)/详细信息表**/
-  on(dom.byId("factoriesBtn"),"click",function(){
+ on(dom.byId("factoriesBtn"),"click",function(){
     var color =dom.byId("factoriesBtn").style["background-color"];
     if(color==downColor){
       dom.byId("factoriesBtn").style["background-color"]="";
@@ -914,11 +922,11 @@ require([
           "title":"排水户信息",
           "description":factories_description,
           "fieldInfos":factories_fieldInfos,
-          //"showAttachments":true
+          "showAttachments":true
         });
     }
   });
-  var attachmentEditor = new AttachmentEditor({}, dom.byId("facAttachments"));
+   /*var attachmentEditor = new AttachmentEditor({}, dom.byId("facAttachments"));
   factoryLyr.on("click",function(evt){
     //console.log(evt);
     mFactoryInfosTab(factories_fieldInfos,evt.graphic.attributes);
@@ -939,10 +947,10 @@ require([
     }
     html+="</table>";
     dom.byId("facDiaTab").innerHTML =html;
-  }
+  }*/
 /**end排水户面图层显影**/
 /**start地名搜索**///(暂弃用)
- /*   var search=new Search({
+    var search=new Search({
         map: map,
         sources: [],
         }, "search"
@@ -951,11 +959,11 @@ require([
     search.on("load", function () {
         var sources = search.sources;
         sources.push({
-           featureLayer: new FeatureLayer(ARCGISIP + "/arcgis/rest/services/POI_HZW/MapServer/0"),
+           featureLayer: new FeatureLayer(ARCGISIP + "/arcgis/rest/services/POI_HZW/MapServer/0",{outFields:["*"]}),
         searchFields: ["F_NAME"],
         displayField: "F_NAME",
         exactMatch: false,
-        outFields: ["F_NAME", "F_ADDRESS", "F_GEONUM"],
+        outFields: ["*"],
         name: "地名",
         placeholder: "吉利",
         zoomScale: 4000,
@@ -967,7 +975,7 @@ require([
         //Set the sources above to the search widget
         search.set("sources", sources);
      });
-     search.startup();*/
+     search.startup();
 /**start地名搜索**/
 /**start属性查看弹窗**/
     //属性查看按钮
