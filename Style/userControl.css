@@ -1,0 +1,9 @@
+.userInfos {
+	font-size: 12pt;
+	top: 1px;
+	right: 20px;
+	height: 100%;
+	position: absolute;
+	z-index: 999
+}
+

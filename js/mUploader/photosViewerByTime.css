@@ -1,0 +1,80 @@
+#photosAllViewer{
+    border: 1px solid #dadada;
+    color: #838383;
+    font-size: 16px;
+    margin-top: 5px;
+    margin: 1em;
+    background-color: #FFF;
+}
+#timeBtn{
+    width: 100%;
+}
+#timeBtn ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #f1f1f1;
+    position: absolute;
+    height: 100%;
+    overflow: auto;
+}
+
+#timeBtn li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+#timeBtn li a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#timeBtn li a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
+
+.responsive .img {
+    border: 1px solid #ccc;
+}
+
+.responsive .img:hover {
+    border: 1px solid #777;
+}
+
+.responsive .img img {
+    width: 100%;
+    height: auto;
+}
+
+.responsive .desc {
+    padding: 7px;
+    text-align: center;
+    height: 2em;
+}
+
+.responsive {
+    padding: 0 6px;
+    float: left;
+    width: 23.99999%;
+}
+@media only screen and (max-width: 700px){
+    .responsive {
+        width: 49.99999%;
+        margin: 6px 0;
+    }
+}
+
+@media only screen and (max-width: 500px){
+    .responsive {
+        width: 100%;
+    }
+}
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}

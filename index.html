@@ -1,0 +1,581 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+        <meta content="IE=7, IE=9, IE=10" http-equiv="X-UA-Compatible"/>
+        <!--The viewport meta tag is used to improve the presentation and behavior of the samples 
+                on iOS devices-->
+        <meta content="initial-scale=1, maximum-scale=1,user-scalable=no" name="viewport"/>
+        <title>
+            宁波杭州湾给排水信息管理平台
+        </title>
+        <link href="Libs/arcgis_js_api3.23/3.23/dijit/themes/claro/claro.css" rel="stylesheet"/>
+        <link href="Libs/arcgis_js_api3.23/3.23/esri/css/esri.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="Style/centerStyle.css">
+        <link rel="stylesheet" href="Style/headFoot.css">
+        <link rel="stylesheet" href="Style/leftStyle.css">
+        <link rel="stylesheet" href="Style/mTable.css"/>
+        <link rel="stylesheet" href="Style/userControl.css">
+        <!-- <style type="text/css">
+            @import "Libs/arcgis_js_api3.23/3.23/dojo/resources/dojo.css";
+            @import "Libs/arcgis_js_api3.23/3.23/dojox/grid/enhanced/resources/claro/EnhancedGrid.css";
+        </style> -->
+        <link rel="stylesheet" href="Libs/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+        <script src="Libs/jquery-1.11.3.js"></script>
+        <script src="Libs/ztree/js/jquery.ztree.core.js"></script>
+        <script src="Libs/ztree/js/jquery.ztree.excheck.js"></script>
+        <script src="Libs/arcgis_js_api3.23/3.23/init.js"></script>
+        <!-- arcgis api for js 加载完毕 -->
+        <script src="js/header.js"></script>
+        <script src="js/IPconfig.js"></script>
+        <script src="js/mapConfig.js"></script>
+        <script src="js/main.js" charset="utf-8"></script> 
+        <!--图表/道路养护,显示脚本-->
+        <script src="js/chartsAndFix.js"></script>
+        <!-- 道路养护 -->
+        <!-- <script src="js/pipeFix.js"></script> -->
+        <!-- 排水户详细信息        -->
+        <script src="js/facDialog.js"></script>
+    </head>
+    <body class="claro">
+        <!-- 等待加载动图 -->
+        <div id="loadgif" style="width:66px;height:66px;position:absolute;top:50%;left:50%;z-index: 999">
+　　         <img alt="加载中..." src="/images/loading.gif"/>
+        </div>
+        <!--start 添加用户地面点图片 -->
+        <div data-dojo-type="dijit/Dialog" id="ImgShowerDialog"  title="图片添加/预览" style="width: inherit;height:inherit">
+           <iframe src="" id="imgUploader_iframe" name="mIframe" frameborder="0" style="width: 100%;height:100%">     
+            </iframe> 
+        </div>
+        <!--end 添加用户地面点图片 -->
+        <!-- start 全景盛放弹窗 -->
+        <div data-dojo-type="dijit/Dialog" id="skyPointsView" title="全景" style="width: auto;height:auto" >
+            <iframe src="" id="sky_iframe" frameborder="0" style="width: 100%;height:100%">     
+            </iframe>
+        </div>
+        <!-- end 全景盛放弹窗 -->
+        <!--start 排水户详细信息弹窗 -->
+        <div data-dojo-type="dijit/Dialog" id="FactoriesDialog" style="min-width: 300px" title="排水户详细信息">
+            <div id="facDiaTab" style="width:100%"></div>
+            <div id="facAttachments"></div>
+            <!-- <table>
+                <tr><td>档案编号：</td>
+                    <td> <input id="fileNum"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>排水户名称：</td>
+                    <td> <input id="TextString"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>成立时间：</td>
+                    <td> <input id="EstablishTime"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>详细地址：</td>
+                    <td> <input id="Address"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>法定代表人：</td>
+                    <td> <input id="LegalPerson"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>营业执照注册号：</td>
+                    <td> <input id="BusinessNum"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>联系人：</td>
+                    <td> <input id="ContactPerson"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>联系电话：</td>
+                    <td> <input id="PhoneNum"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>排水户业务性质：</td>
+                    <td> <input id="BusinessType"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>排水户性质：</td>
+                    <td> <input id="Nature"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>主要产品或服务：</td>
+                    <td> <input id="ProductService"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>主要原料：</td>
+                    <td> <input id="MainMaterial"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>预处理方式：</td>
+                    <td> <input id="Pretreatment"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>排水许可证有效期：</td>
+                    <td> <input id="LicenseValidity"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>排水许可证编号：</td>
+                    <td> <input id="LicenseNum"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>附件：</td>
+                    <td> <input id="mAttachment"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <tr><td>备注：</td>
+                    <td> <input id=""  data-dojo-type="dijit/form/TextBox" style="width: 150px"/></td>
+                </tr>
+                <div id="atta"></div>
+            </table> -->
+        </div>
+        <!--end 排水户详细信息弹窗 -->
+        <!--start 密码修改弹窗 -->
+        <div data-dojo-type="dijit/Dialog" id="changePwdDialog" style="height: auto;width: auto" title="修改密码">
+            <div data-dojo-type="dijit/form/Form">
+                <table class="altrowstable">
+                    <tr><td>用户名</td>
+                        <td><input data-dojo-type="dijit/form/TextBox" id="cPD_user"></td>
+                    </tr>
+                    <tr><td>原密码</td>
+                        <td><input type="password" data-dojo-type="dijit/form/TextBox" id="cPD_pwdOld"></td>
+                    </tr>
+                    <tr><td>新密码</td>
+                        <td><input type="password" data-dojo-type="dijit/form/TextBox" id="cPD_pwdNew"></td>
+                    </tr>
+                    <tr><td>确认密码</td>
+                        <td><input type="password" data-dojo-type="dijit/form/ValidationTextBox" id="cPD_pwdConfirm" data-dojo-props="required:true, intermediateChanges:false, 
+            validator:function(){return this.value == dijit.byId('cPD_pwdNew').value}, 
+            invalidMessage:'两次输入的密码不相同!'"></td>
+                    </tr>
+                    <tr style="text-align: center">
+                        <td colspan="2">
+                            <button id="cPD_reset" data-dojo-type="dijit/form/Button" type="button">重置</button> 
+                            <button id="cPD_update"  data-dojo-type="dijit/form/Button" type="button">提交</button> 
+                        </td>
+                        
+                    </tr>  
+                </table>
+            </div>
+        </div>
+        <!--end 密码修改弹窗 -->
+        <!--start 版本更新日志弹窗 -->
+        <div data-dojo-type="dijit/Dialog" id="updateLogDialog" title="版本更新日志">
+            <div id="updateLogsTxt" style="font-size: 12pt;width:550px"></div>
+        </div>
+        <!--end 版本更新日志弹窗 -->
+        <!-- start图表详情弹窗 -->
+        <div data-dojo-type="dijit/Dialog" id="eChartsDialog" style="width: 960px;height: 640px" title="图表详情">
+            <div data-dojo-props="design:'headline',gutters:false,isLayoutContainer:'true', liveSplitters:true" data-dojo-type="dijit.layout.BorderContainer" id="chartsConBor" style="width:950px;height: 600px;border: 0px">
+                <div id="chartsTable" data-dojo-props="region:'top'" data-dojo-type="dijit.layout.ContentPane"  style="width: 100%px;height: 100px;text-align: center;vertical-align: middle;padding:0;">
+                 </div>
+                 <div id="chartsCon" data-dojo-props="region:'center'" data-dojo-type="dijit.layout.ContentPane"  style="width:100% ;height: auto;padding: 0;">
+                </div>
+            </div>
+        </div>
+        <!--start 主要布局 -->
+        <div data-dojo-props="design:'headline',isLayoutContainer:'true',gutters:false, liveSplitters:true" data-dojo-type="dijit.layout.BorderContainer" id="mainWindow" style="width:100%; height:100%;">
+        <!-- end图表详情弹窗 -->
+        <!--start顶部布局--start-->
+            <div data-dojo-props="region:'top'" data-dojo-type="dijit.layout.ContentPane" id="header" style="width:100%; height:50px;">
+                <div data-dojo-props="design:'headline',gutters:false," data-dojo-type="dijit.layout.BorderContainer" style="width:100%;height:100%;vertical-align: middle;overflow: hidden; ">
+                    <div data-dojo-props="region:'left'" data-dojo-type="dijit.layout.ContentPane" id="title" style="font-size: 30pt;width:100%;height:40px;background-color: #438eb9;vertical-align: middle;padding:0px;overflow: hidden;">
+                       宁波杭州湾给排水信息管理平台
+                        <!--start 用户登录状态和控制 -->
+                        <div class="userInfos">
+                            <table style="height: 100%">
+                               <tr>
+                                   <td rowspan="4"><img src="images/yh.png" alt="用户" id="userPic"></td>
+                               </tr>
+                               <tr>
+                                   <td colspan="2" id="userText"></td>
+                               </tr>
+                               <tr style="color: #00b8ff;font-size: 8pt">
+                                   <td id="logOut" >退出</td>
+                                   <td id="changePwd">修改密码</td>
+                               </tr> 
+                            </table>
+                        </div>
+                        <!--end 用户登录状态和控制 -->  
+                    </div>
+                </div>
+            </div>
+        <!--end顶部布局--end-->
+        <!--start左部布局--start-->
+            <div data-dojo-props="region:'left',splitter:true," data-dojo-type="dijit.layout.ContentPane" id="leftPane">
+                <div data-dojo-type="dijit.layout.TabContainer"data-dojo-props="tabPosition:'top'" style="padding: 1px"> <!-- top,bottom,left-h,right-h -->
+            <!--start图层树和其他-->
+                    <div data-dojo-props="title:'管线', selected:'true'" data-dojo-type="dijit.layout.ContentPane" id="layerListCon">
+                        <!-- <div id="layerListDom">
+                        </div> -->
+                        <div id="treeDemo" class="ztree">
+                        </div>
+                    </div>
+            <!--end图层树和其他-->
+            <!--start 查询 -->
+                    <div data-dojo-props="title:'查询'" data-dojo-type="dijit.layout.ContentPane" id="identifyQueryCon">
+                        <!-- 分类查询 -->
+                        <span class="typeChoose">
+                            <input name="iChoose" id="iChooseYS" type="radio" value="ysC">
+                                雨水
+                            </input>
+                            <input name="iChoose" id="iChooseWS" type="radio" value="wsC">
+                                污水
+                            </input>
+                            <input name="iChoose" id="iChooseALL" type="radio" value="allC" checked="checked">
+                                (雨/污)排水
+                            </input>
+                            <input name="iChoose" id="iChooseJS" type="radio" value="allC">
+                                给水
+                            </input>
+                        </span>
+                        <div>
+                            <label for="pipeType">    类型:</label>
+                            <input id="pipeType" style="width: 120px"/><br>
+                            <label for="roadText">    道路:</label>
+                            <input id="roadText"    data-dojo-type="dijit/form/TextBox" style="width: 150px" value="滨海三路"/><br>
+                            <label for="widthText">   管径:</label>
+                            <input id="widthText"   data-dojo-type="dijit/form/TextBox" style="width: 150px" value="200"/><br>
+                            <label for="materialText">材质:</label>
+                            <input id="materialText" data-dojo-type="dijit/form/TextBox" style="width: 150px" value="塑"/><br>
+                            <button  id="QueryResetBtn"   data-dojo-type="dijit/form/Button" type="button">重置</button>
+                            <button  id="mFindBtn"   data-dojo-type="dijit/form/Button" type="button">搜索</button>
+                            <br>
+                        </div>
+                        <!-- 排水户管线查询  -->
+                        <br>
+                        <div>
+                            <label for="factoryQ">
+                                排水户详情查询:
+                            </label><br>
+                            <input id="factoryQ" data-dojo-type="dijit/form/TextBox" style="width: 150px" value="宁波实隆轴承有限公司"/>
+                            <button id="factoryQbtn" data-dojo-type="dijit/form/Button" type="button">查询</button>
+                        </div>
+                        <br>
+                        <div id="clearFeaturetableDiv"></div>
+                    </div>
+            <!-- end查询 -->
+            <!--start图表显示-->
+                    <div data-dojo-props="title:'统计'" data-dojo-type="dijit.layout.ContentPane">
+                        <form id="chartsOptions">
+                            <!-- 总体  -->
+                            <div><h2>道路管线情况:</h2><br>
+                                <label for="p1"><input id="p1" name="PS_LINE_ec" type="radio" value="ys" checked="true">
+                                    雨水总体情况
+                                </input></label><br />
+                                <label for="p2"><input id="p2" name="PS_LINE_ec" type="radio" value="ws">
+                                    污水总体情况
+                                </input></label><br />
+                                
+                                <label for="p3"> <input id="p3" name="PS_LINE_ec" type="radio" value="pwidthY">
+                                    雨水管径情况
+                                </input></label><br />
+                               
+                                <label for="p4"><input id="p4" name="PS_LINE_ec" type="radio" value="pwidthW">
+                                    污水管径情况
+                                </input></label><br />
+                                
+                                <label for="p5" style="display: none"><input id="p5" name="PS_LINE_ec" type="radio" value="meterialY" >
+                                    雨水管线材质情况
+                                </input></label>
+                                <!-- <br /> -->
+                                
+                                <label for="p6" style="display: none"><input id="p6" name="PS_LINE_ec" type="radio" value="meterialW">
+                                    污水管线材质情况
+                                </input></label>
+                                <!-- <br /> -->
+                                
+                                <label for="p7"><input id="p7" name="PS_LINE_ec" type="radio" value="meterialP">
+                                    排水管线材质情况
+                                </input></label><br />
+                                
+                                <button id="echartsBtn" data-dojo-type="dijit/form/Button" type="button">
+                                    打开图表
+                                </button>
+                            </div>
+                            <!-- 排水户情况 -->
+                            <div><h2>排水户情况:</h2><br>
+                                <label for="f1"> <input id="f1" name="PS_LINE_fac" type="radio" value="meterialY_fac" checked="true">
+                                    企业雨水管线材质情况
+                                </input></label>
+                                <br />
+                                <label for="f2"><input id="f2" name="PS_LINE_fac" type="radio" value="meterialW_fac">
+                                    企业污水材质情况
+                                </input></label>
+                                <br />
+                                <button id="echartsBtn_fac" data-dojo-type="dijit/form/Button" type="button">
+                                    打开图表
+                                </button>
+                            </div>
+                            <!-- 更新情况 -->
+                            <div><h2>更新情况:</h2><br>
+                                <label for="u1"><input id="u1" name="PS_LINE_upd" type="radio" value="meterialY_upd" checked="true">
+                                    雨水管线更新情况
+                                </input></label>
+                                <br />
+                                <label for="u2"><input id="u2" name="PS_LINE_upd" type="radio" value="meterialW_upd">
+                                    污水管线更新情况
+                                </input></label>
+                                <br />
+                                <button id="echartsBtn_upd" data-dojo-type="dijit/form/Button" type="button">
+                                    打开图表
+                                </button>
+                            </div>
+                            
+                        </form>
+                        <div style="height:90%;text-align:center;">
+                            <div id="dataViewer" style="width: 320px ;height:200px;text-align:center;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!--end图表显示-->
+        <!--end左部布局--end-->
+        <!--start右部布局--start(无)-->
+            <div>
+            </div>
+        <!--end右部布局--end-->
+        <!--start中间Map及相关部件布局-->
+            <div data-dojo-props="region:'center',splitter:false" data-dojo-type="dijit.layout.ContentPane" style="padding: 1px;width:100%; height:100%; border: solid 1px #224a54;margin-right: 2px;margin-bottom: 2px;">
+                <div data-dojo-props="design:'headline',isLayoutContainer:true,gutters:false" data-dojo-type="dijit.layout.BorderContainer" id="centerAndBottom1" style="width:100%; height:100%;">
+                <!-- start工具条布局 -->
+                    <div data-dojo-props="region:'top'" data-dojo-type="dijit.layout.ContentPane" id="toolbarCon" style="padding: 0;border: 0;height:30px;overflow: hidden;">
+                        <div data-dojo-type="dijit/Toolbar" id="toolbar1" style="padding: 0;border: 0;height:30px;overflow: hidden;vertical-align: middle;">
+                            <div data-dojo-type="dijit/form/Button" id="measureBtn">
+                                测量
+                                <img id="measureBtn" src="images/measure.png" style="height:20px" title="测量"/>
+                            </div>
+                            <div data-dojo-type="dijit/form/Button" id="attributeBtn">
+                                属性
+                                <img id="attributeBtn" src="images/question.png" style="height:20px" title="属性查看"/>
+                            </div>
+                            <!-- <div data-dojo-type="dijit/form/Button" id="lineConnectBtn">
+                                连通
+                                <img id="lineConnectBtn" src="images\lineChoose.png" style="height:20px" title="管线连通"/>
+                            </div> -->
+                            <div data-dojo-type="dijit/form/Button" id="lineSourceBtn">
+                                溯源
+                                <img id="lineSourceBtn" src="images\lineSource.png" style="height:20px" title="管线溯源"/>
+                            </div>
+                            <div data-dojo-type="dijit/form/Button" id="flowDirection">
+                                流向
+                                <img id="flowDirection" src="images/flowDrection.png" style="height:20px" title="流向"/>
+                            </div>
+                            <div data-dojo-type="dijit/form/Button" id="clearResults">
+                                清除图形
+                                <img id="clearResults" src="images/clear.png" style="height:20px" title="清除"/>
+                            </div>
+                            <div data-dojo-type="dijit/form/Button" id="pipeFixBtn">
+                                管道养护
+                                <img id="pipeFixBtn" src="images/pipeFix.png" style="height:20px;right:10px" title="管道养护记录"/>
+                            </div>
+                            <!-- The following adds a line between toolbar sections-->
+                            <span data-dojo-type="dijit/ToolbarSeparator">
+                            </span>
+                            <!-- <div  data-dojo-type="dijit/form/Button" id="searchBtn">搜索 
+                            <img id="searchBtn" style="height:20px" title="搜索" src="images\search.png" />
+                            </div> -->
+                            <!--基本工具条-->
+                            <div class="navItem" data-dojo-type="dijit/form/Button">
+                                <img id="fullBtn" src="images/globe.png" style="height:20px" title="复位"/>
+                            </div>
+                            <div class="navItem" data-dojo-type="dijit/form/Button">
+                                <img id="zoomprev" src="images/left.png" style="height:20px" title="前一视图"/>
+                            </div>
+                            <div class="navItem" data-dojo-type="dijit/form/Button">
+                                <img id="zoomnext" src="images/right.png" style="height:20px" title="后一视图"/>
+                            </div>
+                            <!-- 版本更新日志 -->
+                            <div  style="position: absolute;right: 0;top:2px">
+                                <button id="updateLog">更新日志</button>
+                            </div> 
+                        </div>
+                    </div>
+                <!-- end工具条布局 -->
+                <!--start中间地图布局--start-->
+                    <div data-dojo-props="region:'center',splitter:'false',isLayoutContainer:'true'" data-dojo-type="dijit.layout.ContentPane" id="map">
+                        <!-- 搜索弹窗 -->
+                        <div id="searchDiv">
+                            <div id="search">
+                            </div>
+                        </div>
+                        <!--测量弹窗-->
+                        <div class="measurementDivCass">
+                            <div id="measurementDiv">
+                            </div>
+                        </div>
+                        <!-- 图例 -->
+                        <div id="legendDiv">
+                            <div id="legend">
+                            </div>
+                        </div>
+                        <!-- 弹窗固定位置 见layout.css 暂无。。。-->
+                        <div id="popupLoc">
+                        
+                        </div>
+                        <!-- 比例尺位置 -->
+                        <div id="scalebarLoc" style="position:absolute;right:100px;">
+                            <div id="scalebar"></div>
+                        </div>
+                        <div>
+                            <input id="closeOpenTable" src="images/open.png" style="display: none;position: absolute;width:18px;text-align: right;bottom:0;z-index: 999" type="image"/>
+                        </div>
+                        <!--start 地图右侧小图标 -->
+                        <table class="mToolTable" style="z-index: 9999;position: absolute;right:10px;top:5px">
+                            <!-- <tr><td>
+                                    <img id="layerSwitcher" src="images/map_switch.png"  title="底图切换"/>
+                            </td></tr> -->
+                            <tr><td>
+                                <div>
+                                    <img id="skyPointsBtn" src="images/全景.png" title="全景图"/>
+                                </div>
+                            </td></tr>
+                            <tr><td>
+                                <div>
+                                    <img id="legendBtn" src="images/legend.png"  title="图例"/>
+                                </div>
+                            </td></tr>
+                            <tr><td>
+                                <div>
+                                    <img id="factoriesBtn" src="images/factories.png"  title="排水户"/>
+                                </div>
+                            </td></tr>
+                            <tr><td>
+                                <div>
+                                    <img id="psOuterBtn" src="images/PSouter.png"  title="排水口"/>
+                                </div>
+                            </td></tr>
+                            <tr><td>
+                                <div>
+                                    <img id="psAuto_PointsBtn" src="images/闸门信息.png"  title="自动闸门井"/>
+                                </div>
+                            </td></tr>  
+                        </table>
+                        <!-- 全景及图片模块 图层树 -->
+                        <div style="z-index: 9999;position: absolute;right:50px;top:2px;display: none;" data-dojo-type="dijit.layout.ContentPane" id="imgLayersDiv">
+                             <div id="imgLayersDom"></div>
+                        </div>
+                       
+                        <!--end 地图右侧小图标 -->
+                        <!--start 底图切换 -->
+                        <table class="altrowstable" style="z-index: 9999;position: absolute;right:10px;bottom: 10px;">
+                            <tr><td>
+                                <a href="#" id="yxBtn">
+                                    <img src="images/switch/yx.png" alt="影像图" title="影像图">
+                                </a>
+                            </td></tr>
+                            <tr><td>
+                                <a href="#" id="zwBtn">
+                                     <img src="images/switch/zw.png" alt="政务图" title="政务图">
+                                </a>
+                            </td></tr>
+                        </table>
+                        <!--end 底图切换 -->
+                    </div>
+                <!--end中间地图布局--end-->
+                <!--start 右部道路养护记录布局 -->
+                    <div data-dojo-props="region:'right',splitter:'false',isLayoutContainer:'true'" data-dojo-type="dijit.layout.AccordionContainer" id="fixContentP" style="display:none;">
+                     <!--start 添加记录 -->
+                        <div data-dojo-type="dijit/layout/ContentPane" title="添加记录" selected="true">
+                            <div id="fixTab">
+                            <table class="imagetable">
+                                <tr style="text-align: center;"><td colspan="4"><span class="fixChoose">
+                                        <input name="iChoose_fix" id="iChoose_dig" type="radio" value="管道开挖">
+                                            管道开挖
+                                        </input>
+                                        <input name="iChoose_fix" id="iChoose_cctv" type="radio" value="CCTV检测">
+                                            CCTV检测
+                                        </input>
+                                        <input name="iChoose_fix" id="iChoose_Dredge" type="radio" value="管道疏通" checked="checked">
+                                            管道疏通
+                                        </input>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr><td colspan="2">管理方</td>
+                                    <td colspan="2">施工方</td>
+                                </tr>
+                                <tr><td>管理单位</td>
+                                    <td><input class="fixPipeItem" id="fix_1"  type="text" style="width: 150px" value="test1" data-dojo-type="dijit/form/TextBox"/></td>
+                                    <td>施工单位</td>
+                                    <td><input class="fixPipeItem" id="fix_2"  type="text" style="width: 150px" value="test2" data-dojo-type="dijit/form/TextBox"/></td>
+                                </tr>
+                                <tr><td>工程名称</td>
+                                    <td><input class="fixPipeItem" id="fix_3"  type="text" style="width: 150px" value="test3" data-dojo-type="dijit/form/TextBox"/></td>
+                                    <td>联系人/电话</td>
+                                    <td><input class="fixPipeItem" id="fix_4"  type="text" style="width: 150px" value="test4" data-dojo-type="dijit/form/TextBox"/></td>
+                                </tr>
+                                <tr><td>工程编号</td>
+                                    <td><input class="fixPipeItem" id="fix_5"  type="text" style="width: 150px" value="test5" data-dojo-type="dijit/form/TextBox"/></td>
+                                    <td>施工位置</td>
+                                    <td><input class="fixPipeItem" id="fix_6"  type="text" style="width: 150px" value="test6" data-dojo-type="dijit/form/TextBox"/></td>
+                                </tr>
+                                <tr><td>工程负责人</td>
+                                    <td><input class="fixPipeItem" id="fix_7"  type="text" style="width: 150px" value="test7" data-dojo-type="dijit/form/TextBox"/></td>
+                                    <td>施工时间</td><!-- 不通过dojo.query统一获取 -->
+                                    <td><input  id="fix_8_s"  type="text" style="width: 140px"  data-dojo-type="dijit/form/DateTextBox"/>至<br>
+                                        <input  id="fix_8_e"  type="text" style="width: 140px" data-dojo-type="dijit/form/DateTextBox"/></td>
+                                </tr>
+                                <tr><td>管道问题</td>
+                                    <td><input class="fixPipeItem" id="fix_9"  type="text" style="width: 150px" value="test9" data-dojo-type="dijit/form/TextBox"/></td>
+                                    <td>施工费用(/万元)</td>
+                                    <td><input class="fixPipeItem" id="fix_10_cost"  type="text" style="width: 150px" data-dojo-type="dijit/form/TextBox"/></td>
+                                </tr>
+                                <tr><td colspan="1">管段选择</td>
+                                    <td colspan="3">
+                                        <button id="fixPipeAdd" data-dojo-type="dijit/form/Button" type="button">添加管线</button>
+                                        <button id="fixPipeStop" data-dojo-type="dijit/form/Button" type="button">结束添加</button>
+                                        <div class="tagsinput" id="tagsinputID" style="width: 99%; min-height: 100px; height: 200px;"> 
+                                            <!-- <span class="tag">baz&nbsp;&nbsp;
+                                                <a href="#" title="Removing tag">x</a>
+                                            </span> -->
+                                         </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td >备注</td>
+                                    <td colspan="3"  height="80px">
+                                        <div>
+                                            <!-- <textarea class="fixPipeItem" id="fix_13" style="height:70px;width:100%" value="test13"></textarea> -->
+                                            <input  class="fixPipeItem"  data-dojo-type="dijit/form/SimpleTextarea"   id="fix_13" style="height:70px;width:100%" value="test13""></td>
+                                        </div>
+                                </tr>
+                                <tr><td colspan="4"> 
+                                    <button  id="fixSubmit"   data-dojo-type="dijit/form/Button" type="button">提交</button></td>
+                                </tr>
+                            </table>
+                            </div>                           
+                        </div>
+                     <!--end 添加记录 -->
+                     <!--start 记录总览 -->
+                        <div data-dojo-type="dijit/layout/ContentPane" title="养护信息查询">
+                            <!-- 检修记录查询 -->
+                            <div>
+                                <label for=".fixPipeQuery">工程编号</label>
+                                <input class="fixPipeQuery"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/>
+                                <label for=".fixPipeQuery">工程名称</label>
+                                <input class="fixPipeQuery"  data-dojo-type="dijit/form/TextBox"  style="width: 150px"/>
+                                <br>
+                                <label for=".fixPipeQuery">检修类型</label>
+                                <select data-dojo-type="dijit/form/ComboBox" class="fixPipeQuery" name="fruit" style="width: 150px">
+                                    <option>全部</option>
+                                    <option selected>管道开挖</option>
+                                    <option>CCTV检测</option>
+                                    <option>管道疏通</option>
+                                </select>
+                                <label for=".fixPipeQuery">施工单位</label>
+                                <input class="fixPipeQuery"  data-dojo-type="dijit/form/TextBox" style="width: 150px"/>
+                                <br>
+                                <label for=".fixPipeQuery">开始时间</label>
+                                <input class="fixPipeQuery"  data-dojo-type="dijit/form/DateTextBox" style="width: 150px"/>
+                                <label for=".fixPipeQuery">结束时间</label>
+                                <input class="fixPipeQuery"  data-dojo-type="dijit/form/DateTextBox" style="width: 150px"/>
+                                <br>
+                                <button id="fixQuerybtn" data-dojo-type="dijit/form/Button" type="button">查询</button>
+                            </div>
+                            <!--end 检修记录查询 -->
+                            <div id="FixInfosGrid"></div>
+                        </div>
+                    <!--end 记录总览 -->
+                    </div>
+                <!--end 右部道路养护记录布局 -->
+                <!--start底部布局--start-->                    
+                    <div data-dojo-props="region:'bottom',splitter:true,isLayoutContainer:true," data-dojo-type="dijit.layout.ContentPane" id="footer">
+                        <!-- start底部属性表 -->
+                        <div data-dojo-props="" data-dojo-type="dijit/layout/ContentPane" id="mTableContentPane" style="height: inherit;padding: 1px">
+                            <div id="divShowResultQ" style="height: 100%">
+                            </div>
+                        </div>
+                    </div>
+                <!--end底部布局--end-->
+                </div>
+            </div>
+        <!--end中间Map及相关部件布局-->
+        </div>
+    </body>
+</html>

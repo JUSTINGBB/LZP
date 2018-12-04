@@ -1,0 +1,121 @@
+#centerAndBottom1 {
+    padding: 0;
+    border: 0;
+}
+
+#toolbarCon
+{
+    padding: 0;
+    border: 0;
+}
+#map {
+    position: relative;
+    margin: 1px;
+}
+#map {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#search {
+    display: block;
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+}
+    /*切换底图*/
+.layerSwitcherDiv {
+    height: 28px;
+    right: 0px;
+    position: absolute;
+    background-color: #f3f3f3;
+    width: 85px;
+    top: 0;
+    border: 0;
+    font-size: 12pt;
+    z-index: 99;
+}
+.measurementDivCass {
+    width: 250px;
+    position: absolute;
+    left: 26px;
+    top: 50px;
+    z-index: 999;
+    background-color: #f0f3ff;
+    border: 0px solid #bd0;
+    box-shadow: 1px 2px 1px rgba(0,0,0,0.15);
+} 
+/* 图例  */
+#legendDiv {
+    overflow-y:auto;
+    width: 160px;
+    height: auto;
+    max-height: 50%;
+    position: absolute;
+    left: 26px;
+    bottom: 50px;
+    z-index: 9999;
+    background-color: #f0f3ff;
+    border: 0px solid #bd0;
+    box-shadow: 1px 2px 1px rgba(0,0,0,0.15);
+    display: none;
+}
+  #legendDiv::-webkit-scrollbar {
+        width:10px;
+        height:10px;
+    }
+   #legendDiv::-webkit-scrollbar-button    {
+        background-color:#ffb376;
+        height: 10px
+    }
+   #legendDiv::-webkit-scrollbar-track     {
+        background:#f0f3ff;
+    }
+   #legendDiv::-webkit-scrollbar-track-piece {
+        /* background:url(../images/2.png); */
+    }
+   #legendDiv::-webkit-scrollbar-thumb{
+        background:#82AFFF;
+        border-radius:4px;
+    }
+   #legendDiv::-webkit-scrollbar-corner {
+        background:#82AFFF;
+    }
+   #legendDiv::-webkit-scrollbar-resizer  {
+        background:#f0f3ff;
+    }
+/*管线检修记录“标签”控件*/
+div.tagsinput { border:1px solid #CCC; background: #FFF; padding:5px; width:300px; height:100px; overflow-y: auto;}
+div.tagsinput span.tag { border: 1px solid #a5d24a; -moz-border-radius:2px; -webkit-border-radius:2px; display: block; float: left; padding: 5px; text-decoration:none; background: #cde69c; color: #638421; margin-right: 5px; margin-bottom:5px;font-family: helvetica;  font-size:13px;}
+div.tagsinput span.tag a { font-weight: bold; color: #82ad2b; text-decoration:none; font-size: 11px;  } 
+div.tagsinput input { width:80px; margin:0px; font-family: helvetica; font-size: 13px; border:1px solid transparent; padding:5px; background: transparent; color: #000; outline:0px;  margin-right:5px; margin-bottom:5px; }
+div.tagsinput div { display:block; float: left; } 
+.tags_clear { clear: both; width: 100%; height: 0px; }
+.not_valid {background: #FBD8DB !important; color: #90111A !important;}
+/* 地图属性弹窗样式 */
+#popupLoc{
+
+}
+.esriPopup.light div.titleButton, 
+      .esriPopup.light div.titlePane .title,
+      .esriPopup.light div.actionsPane .action {
+    color: #d4721e;
+}
+      /* Additional customizations */
+.esriPopup.light .esriPopupWrapper {
+    border: none;
+}
+.esriPopup .contentPane {
+    text-align: left;
+}
+.esriPopup a {
+    color: #d02626;
+    text-decoration: underline;
+}
+
+.esriViewPopup .gallery {
+    margin: 0 auto;
+}
